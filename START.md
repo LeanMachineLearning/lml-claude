@@ -198,3 +198,7 @@ Tell the user about the two steps that only they can do:
   cannot work: an untrusted folder, a setup problem a round reports, or three rounds in a row
   without a commit. Its workers start once a reusable item is proved;
   `scripts/formalize.sh status` and `scripts/formalize.sh logs <id>` show them.
+- **Decide on blocked results.** When a round finds a headline result false as stated, the script
+  prints `Blocked: <result>` and the rounds skip it. The user then runs `claude` in the paper's
+  folder and types `/lml:formalize-paper decide`: the session explains the problem, proposes a
+  correction, and applies the user's choice. The loop can keep running meanwhile.

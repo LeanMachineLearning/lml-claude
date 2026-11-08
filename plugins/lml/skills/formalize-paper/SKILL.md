@@ -1,6 +1,6 @@
 ---
 name: formalize-paper
-description: Workflow and verification checklist for formalizing a research paper in Lean 4 on top of LMLExplore (and so Mathlib, Tau Ceti and LML), blueprint-driven and comparator-verified, in a repository made from lml-paper-template. Covers phase 1 with the user (outline, blueprint, statements), phase 2 (proofs), the unattended rounds that scripts/formalize.sh runs after phase 1 (argument `round`), the bump to a newer LMLExplore (argument `bump`), the literature-links citations and the errata file. Use when starting, extending or checking such a formalization.
+description: Workflow and verification checklist for formalizing a research paper in Lean 4 on top of LMLExplore (and so Mathlib, Tau Ceti and LML), blueprint-driven and comparator-verified, in a repository made from lml-paper-template. Covers phase 1 with the user (outline, blueprint, statements), phase 2 (proofs), the unattended rounds that scripts/formalize.sh runs after phase 1 (argument `round`), the user's decisions on the headline results the rounds find false as stated (argument `decide`), the bump to a newer LMLExplore (argument `bump`), the literature-links citations and the errata file. Use when starting, extending or checking such a formalization.
 ---
 
 # Formalizing a paper on top of LMLExplore
@@ -21,6 +21,8 @@ How this skill was invoked decides what to do:
   with the user. In a new repository, start with `bootstrap.md`.
 - **`round`**: one unattended round, see [Unattended rounds](#unattended-rounds). No user is
   present.
+- **`decide`**: the user decides on the headline results that rounds have blocked, see
+  [Blocked results](#blocked-results).
 - **`bump`**: move to a newer LMLExplore, see [The bump](#the-bump).
 
 Companion files in this directory: `bootstrap.md` (from the template to the first push) and
@@ -31,7 +33,9 @@ of this plugin owns `PAPER_ROADMAP.md`.
 
 - `source/`: the paper. `notes/blueprint-outline.md`: the paper decomposed into labelled lemmas
   before any Lean is written. `notes/*.md`: design decisions. `notes/paper-errata.md`: the
-  errors found in the paper, see [Errata](#errata).
+  errors found in the paper, see [Errata](#errata). `notes/statement-corrections.md`: the errors
+  found in the project's own headline statements after phase 1, where the paper is right, see
+  [Blocked results](#blocked-results).
 - `blueprint/src/chapters/*.tex`: the leanblueprint. Part I follows the paper; Part II holds the
   library-shaped prerequisites.
 - `<Lib>/ForLMLExplore/`: library-shaped material, with no paper-specific object. It uses
@@ -176,9 +180,13 @@ user is present.
   line `Setup problem: <what is wrong and how to fix it>`. `formalize.sh` stops on it.
 - **The statements are frozen.** Never change the comparator challenges, `comparator/targets.txt`
   or the statements of the headline results. If a headline result turns out false or unprovable
-  as stated, write its errata entry, set the `status` of its `alignment.statements` entry to
-  `blocked`, and print `Blocked: <result>` at the end of the round. Later rounds skip blocked
-  results; the user decides.
+  as stated, record why: an errata entry when the paper is wrong, or an entry of
+  `notes/statement-corrections.md` when only the Lean statement is (it misses a hypothesis the
+  paper states or leaves implicit, or misreads the paper), with the evidence (a counterexample, a
+  Lean check). Set the `status` of its `alignment.statements` entry to `blocked`, with a key
+  `blocked` naming the entry (`E3`, or `statement-corrections: Theorem 5`), and print
+  `Blocked: <Lean name> (<entry>)` at the end of the round. Later rounds skip blocked results
+  until the user decides, with `/lml:formalize-paper decide`.
 - **Do the first job that applies, commit it, then stop:**
   1. **Tag.** `PAPER_ROADMAP.md` has no items yet: follow the tagging procedure of the
      `paper-roadmap` skill.
@@ -217,6 +225,46 @@ user is present.
 4. Set the item's status to `PR #<number>`, and commit.
 
 The PR worker that `formalize.sh` runs answers the review of these pull requests.
+
+## Blocked results
+
+Argument `decide`. The user is present, and decides on the headline results that rounds have
+marked `status: blocked` in `alignment.statements`. The loop of `formalize.sh` may be running: it
+skips blocked results, but its rounds edit and commit the other files.
+
+1. For each blocked result, explain the problem from its entry (in `notes/paper-errata.md` or
+   `notes/statement-corrections.md`) and the round's evidence, and give the choices that fit:
+   add the missing hypothesis; state the result in another form; keep the negation (the
+   counterexample) as the headline result; or drop the result. Recommend one, and ask.
+2. Before editing, look at `git status`: a running round may have uncommitted changes in a file
+   you need (`formalization.yaml`, a blueprint chapter, `PAPER_ROADMAP.md`). Then wait for the
+   round's commit; the loop prints a line at each new round.
+3. Apply the decision:
+   - the statement and its docstring in `<Lib>/<Paper>/`, and its blueprint environment;
+   - for a dropped result, its lines in `comparator/targets.txt`, in the `globs` of the
+     `Comparator` library and in `alignment.statements`;
+   - in `alignment.statements`: `status` back to `stated`, no `blocked` key, and the `relation`,
+     `erratum` and `note` of the new statement;
+   - the decision, with the date, in the entry: the **Lean** bullet of an errata entry, or the
+     **Decision** bullet of a statement correction;
+   - regenerate the challenges (`python3 scripts/make-challenges.py`) and check with `git diff
+     comparator/` that only the decided challenges changed; `lake build Comparator` and
+     `scripts/check-build.sh` pass.
+4. Commit only those files, by path (`git commit -- <paths>`), so that a running round's work
+   stays out of the commit, and push. The statement is frozen again from that commit on.
+
+A statement correction has this form:
+
+```markdown
+## Theorem 5: at least two arms
+
+- **Statement:** `Maiti2026Power.MXJ2026.theorem_5`, as frozen at the end of phase 1.
+- **Problem:** what is wrong with the Lean statement, and why the paper's result is not
+  affected (it states the hypothesis, or leaves it implicit).
+- **Evidence:** the counterexample, and where its Lean check is.
+- **Found:** round of 2026-11-08 (commit abc1234).
+- **Decision:** the user's choice, with the date, and the commit that applies it.
+```
 
 ## The bump
 
