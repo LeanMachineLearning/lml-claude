@@ -272,7 +272,7 @@ then `grep -n -A3 "^! " ../print/print.log`.
 Comparator, whenever a headline statement or a definition in its closure changes:
 
 ```
-python3 scripts/make-challenges.py     # challenge-gen --import Mathlib: statements over Mathlib
+python3 scripts/make-challenges.py     # challenge-gen: imports LMLExplore, copies the project's defs
 lake build Comparator                  # no --wfail: "uses sorry" warnings are expected here
 scripts/comparator-verify.sh --insecure   # 10–15 min; in a session, only when asked; run detached
 ```

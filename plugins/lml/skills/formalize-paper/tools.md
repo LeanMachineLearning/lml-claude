@@ -39,10 +39,9 @@
   `pip install git+https://github.com/LeanTrustBuilders/referee-site` gives `trust-site build`.
 - **challenge-gen**: https://github.com/LeanTrustBuilders/challenge-gen — the comparator
   challenges, run by `scripts/make-challenges.py`. It writes each headline statement with `sorry`
-  as a standalone module, everything the statement rests on copied verbatim from its source, and
-  beside it comparator's config listing the theorems to check. With `--import Mathlib` the file
-  imports Mathlib alone and copies what it needs of the project and of LML, the shape Palomar asks
-  for. No binary release: the script clones and builds it into `~/.cache/<Name>/challenge-gen`,
+  as a standalone module, and beside it comparator's config listing the theorems to check. With
+  `--import LMLExplore --import Mathlib` the file imports the LMLExplore and Mathlib modules it
+  needs and copies the project's definitions verbatim from their sources. No binary release: the script clones and builds it into `~/.cache/<Name>/challenge-gen`,
   at the tag `v<toolchain>` of the project's `lean-toolchain`, which must exist
   (`gh release list -R LeanTrustBuilders/challenge-gen`; there is none before 4.35.0-rc3).
 - **leanblueprint**: https://github.com/PatrickMassot/leanblueprint — `pip install leanblueprint`;
@@ -55,8 +54,6 @@
   sandbox https://github.com/Zouuup/landrun (required unless `--insecure`).
 - **formalization.yaml**: https://github.com/mathlib-initiative/formalization.yaml — schema and
   field documentation; the file's header links the schema for editor validation.
-- **Palomar registry**: https://palomar-registry.org/ — the registry whose mechanical verification
-  dictates the challenge shape (Mathlib-only imports, everything else inlined).
 - **CI actions** (`.github/workflows/`): `leanprover/lean-action` (build),
   `leanprover-community/docgen-action` (blueprint website), `LeanTrustBuilders/referee-site`
   (referee site), `leanprover-community/mathlib-update-action` (dependency bumps).
@@ -91,7 +88,8 @@ questions. In the editor, use VS Code with the Lean 4 extension.
   headings with `\texorpdfstring`, no `enumitem` (plasTeX), `\^{}` inside `\texttt`.
 - `leanblueprint web` reuses the bibliography of the PDF build: always build the PDF first.
 - Comparator compares every constant in the closure of a headline statement structurally, by
-  name, and the challenge is a single module while the project is many. Lean abstracts each
+  name, and the challenge is a single module while the project is many. This concerns the
+  project's definitions, which the challenge copies; LMLExplore's are imported. Lean abstracts each
   non-trivial nested proof of a definition into `decl._proof_i` and each `match` into
   `decl.match_i`, deduplicating identical ones *per module*, so their names differ between the
   project and the challenge (`optZ.match_1` vs `Learning.MDP.env.match_1`, `maxReturn._proof_1`
