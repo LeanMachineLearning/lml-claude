@@ -136,6 +136,14 @@ cd <Name>
 gh repo edit --add-topic lmlexplore-paper
 ```
 
+Creating a public repository is an action some agents may not take by themselves (Claude Code's
+auto mode refuses it). If the command is refused, **Stop**: ask the user to type it, with the
+directory filled in, as
+
+```
+! cd <directory> && gh repo create <Name> --template LeanMachineLearning/lml-paper-template --public --clone && cd <Name> && gh repo edit --add-topic lmlexplore-paper
+```
+
 Check: the new folder contains `CLAUDE.md`, `PAPER_ROADMAP.md`, `lakefile.toml` and
 `scripts/formalize.sh`.
 
