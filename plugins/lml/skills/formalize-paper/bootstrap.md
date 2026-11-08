@@ -16,19 +16,20 @@ key (`MXJ26`). `tools.md` says where each tool comes from.
 1. **Install the tools that `START.md` does not.** Python 3 with `pip install leanblueprint`, and
    a TeX distribution with `xelatex` and `latexmk`, for the blueprint. For the user: VS Code with
    the Lean 4 extension. Check: `elan --version`, `leanblueprint --help`, `xelatex --version`.
-2. **Fill in the template.** Replace the placeholders `<Lib>`, `<Paper>` and `<KEY>` in every file
-   (`grep -rl -e '<Lib>' -e '<Paper>' -e '<KEY>' .`), and rename the folders `<Lib>/` and
-   `<Lib>/<Paper>/` and the root file `<Lib>.lean`. Then pin the current LMLExplore and build:
+2. **Fill in the template.** From a clean checkout of the new repository:
    ```
+   scripts/init.sh <Lib> <Paper> <KEY>                 # e.g. Maiti2026Power MXJ2026 MXJ26
    lake update LMLExplore                              # LMLExplore's current main
    cp .lake/packages/LMLExplore/lean-toolchain .       # LMLExplore's toolchain
    scripts/build.sh                                    # prebuilt Mathlib and Tau Ceti, then lake build
    ```
-   Check: the build succeeds; `lake exe mk_all --lib <Lib> --check` passes; and the Mathlib, Tau
-   Ceti and LML commits in `lake-manifest.json` are those of
-   `.lake/packages/LMLExplore/lake-manifest.json` (`scripts/check-pins.sh`). Every Lean file
-   follows the template's example files: copyright header, `module`, `public import …`, a module
-   docstring, `@[expose] public section`.
+   `init.sh` fills in the template's placeholders (the library, the paper's folder, the citation
+   key, and the GitHub owner, repository and author it finds), renames the folders, drops the
+   template's part of the README, and deletes itself. Check: the build succeeds;
+   `lake exe mk_all --lib <Lib> --check` passes; and `scripts/check-pins.sh` reports that every
+   package LMLExplore pins is at LMLExplore's revision. Commit. Every Lean file follows the
+   template's `<Lib>/<Paper>/Basic.lean`: copyright header, `module`, `public import …`, a module
+   docstring, `@[expose] public section`; delete that placeholder file with the first real one.
 3. **Put the paper in `source/`** (the arXiv or camera-ready TeX sources) and write
    `notes/blueprint-outline.md` before any blueprint or Lean: the results, the lemmas they need,
    what LMLExplore, Tau Ceti, LML and Mathlib already provide, the modelling choices. This is the

@@ -69,9 +69,10 @@ arguments go to `lake build`: it fetches Mathlib's and Tau Ceti's prebuilt files
    finite-dimensional inner product space rather than `EuclideanSpace`, measures with implicit
    `{mX : MeasurableSpace X}` binders when a measure fixes the σ-algebra, no abbreviations that
    only save typing). State each headline result with `sorry` and list it in
-   `formalization.yaml`. Then go through the statements with the user, against the paper. Each
-   gets its literature-links relation in `formalization.yaml`, and each error of the paper that
-   this check finds gets an errata entry. Only then generate the comparator challenges
+   `formalization.yaml` (an entry of `alignment.statements`). Then go through the statements with
+   the user, against the paper. Each gets its literature-links relation (the entry's `relation`
+   key), and each error of the paper that this check finds gets an errata entry (named by the
+   entry's `erratum` key). Only then generate the comparator challenges
    (`bootstrap.md`, step 6). The challenges freeze the statements: phase 2 must prove exactly
    them.
 3. **End of phase 1.** Tell the user that the rest can run unattended: `scripts/formalize.sh`, in
@@ -126,8 +127,9 @@ that the links survive a port.
   DOI or publisher page), `citation` (a CSL-JSON item), `identifiers` (`{"arxiv": "…"}`), and
   `version`, the revision whose numbering the citations use (`v2` of an arXiv preprint), when it
   is not the published one. LMLExplore's `scripts/literature/lookup.py propose` drafts entries.
-- **The relation of each headline result**, set during the phase-1 statement check, goes in
-  `formalization.yaml`, read "paper *relation* Lean":
+- **The relation of each headline result**, set during the phase-1 statement check, is the
+  `relation` key of its entry in `alignment.statements` of `formalization.yaml`, read "paper
+  *relation* Lean":
   - `exactMatch`: the same claim, up to notation and junk values;
   - `closeMatch`: nearly the same, with a difference a reader should know, such as a convention
     or a corrected constant;
@@ -157,7 +159,8 @@ generalization always has an entry; never fix the paper silently. One section pe
 ```
 
 Number the entries `E1`, `E2`, … and never renumber them. A headline result stated in corrected
-form names its entry in `formalization.yaml`. The file is meant to be sent to the authors as it
+form names its entry in the `erratum` key of its `alignment.statements` entry in
+`formalization.yaml`. The file is meant to be sent to the authors as it
 is: keep it factual and self-contained.
 
 ## Unattended rounds
@@ -170,8 +173,9 @@ user is present.
   record why the job is blocked, not to stop the round.
 - **The statements are frozen.** Never change the comparator challenges, `comparator/targets.txt`
   or the statements of the headline results. If a headline result turns out false or unprovable
-  as stated, write its errata entry, leave the result, and print `Blocked: <result>` at the end
-  of the round. The user decides.
+  as stated, write its errata entry, set the `status` of its `alignment.statements` entry to
+  `blocked`, and print `Blocked: <result>` at the end of the round. Later rounds skip blocked
+  results; the user decides.
 - **Do the first job that applies, commit it, then stop:**
   1. **Tag.** `PAPER_ROADMAP.md` has no items yet: follow the tagging procedure of the
      `paper-roadmap` skill.
@@ -180,11 +184,11 @@ user is present.
      skill.
   3. **Refactor pull request.** An item tagged `refactor` is `proved` and has no pull request:
      open it, see [below](#refactor-pull-requests).
-  4. **Advance.** A headline result or a blueprint item is not proved: take one area of the
-     blueprint, such as a chapter, or a main result with the prerequisites it still needs.
-     Prefer an area whose dependencies are proved and that unblocks the most. Push it as far as
-     the session gets, following the workflow above: proofs, blueprint tags, citations, errata,
-     statuses in `PAPER_ROADMAP.md`.
+  4. **Advance.** A headline result or a blueprint item is not proved (blocked results aside):
+     take one area of the blueprint, such as a chapter, or a main result with the prerequisites
+     it still needs. Prefer an area whose dependencies are proved and that unblocks the most.
+     Push it as far as the session gets, following the workflow above: proofs, blueprint tags,
+     citations, errata, statuses in `PAPER_ROADMAP.md`.
   5. **Nothing applies:** print `Nothing to do` and stop.
 - **Before committing:** `scripts/build.sh <Lib> --wfail` and `lake exe runLinter <Lib>` pass,
   or the round reverts what broke them; `lake exe mk_all --lib <Lib>` after adding or removing a
