@@ -57,6 +57,8 @@ key (`MXJ26`). `tools.md` says where each tool comes from.
    `scripts/make-challenges.py` runs challenge-gen, which it clones and builds for the project's
    toolchain (see `tools.md`). Check: `python3 scripts/make-challenges.py`, `lake build
    Comparator`, then one `scripts/comparator-verify.sh --insecure <config>`.
-7. **First push.** Commit and push, and check that the workflows go green: build, lint,
-   `mk_all --check`, comparator build, referee site, literature links, blueprint deployment. From
-   here on, follow the workflow in `SKILL.md`.
+7. **First push.** Commit. If the repository is on GitHub, push, and check that the CI workflow
+   goes green: build, lint, pins, `ForLMLExplore/` rules, `mk_all --check`, comparator build, and on
+   `main` the referee site, literature links and blueprint deployment. A paper kept local has no
+   CI: run `scripts/build.sh <Lib> --wfail`, `lake lint`, `scripts/check-pins.sh` and
+   `scripts/check-forlmlexplore.sh` instead. From here on, follow the workflow in `SKILL.md`.

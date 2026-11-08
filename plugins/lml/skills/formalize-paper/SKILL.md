@@ -194,7 +194,8 @@ user is present.
   or the round reverts what broke them; `lake exe mk_all --lib <Lib>` after adding or removing a
   module; `lake build Comparator` when a definition in the closure of a headline statement
   changed. Never run the full comparator verification: `formalize.sh` runs it once, at the end.
-- **One commit per round**, whose message names the job and the area. Push to `origin`. Never
+- **One commit per round**, whose message names the job and the area. Push to `origin`, when the
+  repository has one (a paper kept local has none). Never
   rewrite history or force-push.
 - Outside the paper repository, a round only opens refactor pull requests to LMLExplore. It opens
   no issue or pull request anywhere else.

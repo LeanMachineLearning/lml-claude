@@ -45,8 +45,10 @@ Paper: alice/Maiti2026Power · LMLExplore 4cb54f2e8a1b · LMLRoadmaps 2ac39b4c0d
 The support function of a set and the Gaussian width of a set for a measure, …, with references.
 ```
 
-- **Header line.** `Paper:` gives the `<owner>/<repo>` of the paper repository: the value that the
-  paper's pull requests to LMLExplore carry in their `Paper:` line. Then the twelve-character
+- **Header line.** `Paper:` gives the paper's identity, `<owner>/<repo>`: its GitHub repository,
+  or for a paper kept local, the user's GitHub login and the folder's name. `scripts/init.sh` writes
+  it; never change it, since the paper's pull requests to LMLExplore carry it in their `Paper:`
+  line. Then the twelve-character
   commits of the LMLExplore pin and of the LMLRoadmaps `main` that the tags were checked against,
   and the date of that check.
 - **Id.** `R1`, `R2`, …, never renumbered or reused. Pull requests name their item with a line

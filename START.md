@@ -121,14 +121,21 @@ Ask the user for:
 - the repository name: the paper's Google Scholar BibTeX key, `NameYearFirst` (first author's
   last name, year, first word of the title other than articles and prepositions), for example
   `Maiti2026Power`;
-- public or private. Private repositories work, but they do not appear in the list of papers
-  built on LMLExplore;
+- where the repository lives. Tell the user what each choice means:
+  - **public on GitHub** (recommended): CI checks every push, the blueprint and the referee site
+    are published on GitHub Pages, and the paper appears in the list of papers built on
+    LMLExplore;
+  - **private on GitHub**: the same, but nothing is published or listed, and GitHub Pages and CI
+    minutes may need a paid plan;
+  - **local only**: no GitHub repository, so no CI and no website; everything else works,
+    including the Tau Ceti workers' pull requests to LMLExplore, which then name the paper by the
+    user's GitHub login and the folder's name. It can be published later;
 - the local directory in which to create it.
 
 Check: that directory has no folder of that name yet.
 
-Create the repository from the template in that directory, using `--private` instead of
-`--public` if the user chose private:
+**Public or private.** Create the repository from the template in that directory, with
+`--private` instead of `--public` for a private one (and no topic):
 
 ```bash
 gh repo create <Name> --template LeanMachineLearning/lml-paper-template --public --clone
@@ -136,13 +143,28 @@ cd <Name>
 gh repo edit --add-topic lmlexplore-paper
 ```
 
-Creating a public repository is an action some agents may not take by themselves (Claude Code's
-auto mode refuses it). If the command is refused, **Stop**: ask the user to type it, with the
-directory filled in, as
+Creating a repository on GitHub is an action some agents may not take by themselves (Claude
+Code's auto mode refuses it). If the command is refused, **Stop**: ask the user to type it, with
+the directory filled in, as
 
 ```
 ! cd <directory> && gh repo create <Name> --template LeanMachineLearning/lml-paper-template --public --clone && cd <Name> && gh repo edit --add-topic lmlexplore-paper
 ```
+
+**Local only.** Copy the template into that directory, with a history of its own:
+
+```bash
+git clone --depth 1 https://github.com/LeanMachineLearning/lml-paper-template <Name>
+cd <Name>
+rm -rf .git
+git init -b main
+git add -A
+git commit -m "From lml-paper-template"
+```
+
+To publish it later: `gh repo create <Name> --public --source . --push`, then
+`gh repo edit --add-topic lmlexplore-paper`. Keep the `Paper:` line of `PAPER_ROADMAP.md` as it
+is, so that the pull requests already opened still match.
 
 Check: the new folder contains `CLAUDE.md`, `PAPER_ROADMAP.md`, `lakefile.toml` and
 `scripts/formalize.sh`.
