@@ -190,6 +190,5 @@ Tell the user about the two steps that only they can do:
 - **Start the rest of the formalization.** Once phase 1 is done, in a terminal or tmux and
   outside the agent session, run `scripts/formalize.sh` and leave it running. It proves the rest
   of the paper and sends the reusable parts to LMLExplore, on the user's subscription, and stops
-  when everything is done (`scripts/formalize.sh stop` stops it earlier). At start it runs
-  `tauceti doctor`, which says whether a worker needs its own login to the agent (Claude or
-  Codex).
+  when everything is done (`scripts/formalize.sh stop` stops it earlier). Its workers start once
+  a reusable item is proved; `scripts/formalize.sh status` and `scripts/formalize.sh logs <id>` show them.
