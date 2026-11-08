@@ -13,7 +13,8 @@ This skill combines two sources:
 The originals are in `references/`, with their provenance in `references/SOURCES.md`; consult
 them for detail. This file is the working procedure.
 
-Companion scripts (run with `python3 ~/.claude/skills/lean-review/scripts/<name>`):
+Companion scripts, in the `scripts/` folder next to this file (run with
+`python3 <this skill's directory>/scripts/<name>`):
 
 - `decl_headers.py FILE_OR_DIR...`: every declaration's statement, without proofs. This is the
   fastest way to review an API surface.

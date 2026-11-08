@@ -9,7 +9,26 @@
   Batteries', https://github.com/leanprover-community/batteries.
 - **LML** (Lean Machine Learning): https://github.com/LeanMachineLearning/LML — the
   algorithm–environment framework (`Algorithm`, `Environment`, `IsAlgEnvSeq`, `IdentAlg`,
-  stopped histories, divergence decompositions) and its `ForMathlib/` lemmas.
+  stopped histories, divergence decompositions) and its `ForMathlib/` lemmas. A paper project
+  gets it through LMLExplore, at LMLExplore's pin.
+- **LMLExplore**: https://github.com/LeanMachineLearning/LMLExplore — the AI-written library on
+  top of Mathlib, Tau Ceti and LML that paper projects require. Its `AGENTS.md` holds the rules
+  that `ForLMLExplore/` follows; its `scripts/build.sh` shows how to fetch Tau Ceti's prebuilt
+  files; its `scripts/literature/` writes the literature-links annotations.
+- **LMLRoadmaps**: https://github.com/LeanMachineLearning/LMLRoadmaps — the human-written roadmaps
+  that decide what LMLExplore builds. `PAPER_ROADMAP.md` tags prerequisites against them
+  (`Area N.k`: roadmap directory, layer, item).
+- **Tau Ceti**: https://github.com/TauCetiProject/TauCeti — a library downstream of Mathlib that
+  LMLExplore builds on; https://github.com/TauCetiProject/TauCetiWorker is the worker that
+  `scripts/formalize.sh` runs (at the commit in lml-claude's `worker.ref`, through `uvx`), and
+  https://github.com/TauCetiProject/TauCetiReview holds the review rubrics that ported code must
+  pass.
+- **Literature Links**: https://github.com/mathlib-initiative/literature-links — the annotation
+  format and its checker, `literature-links validate`.
+- **lml-claude** and **lml-paper-template**: https://github.com/LeanMachineLearning/lml-claude
+  (this plugin, `START.md`, `worker.ref`) and
+  https://github.com/LeanMachineLearning/lml-paper-template (the repository a paper project is
+  made from).
 - **The referee site**: https://github.com/LeanTrustBuilders/referee-site — the project's
   claims, what their statements rest on, and a private review of each declaration, published
   under `home_page/referee` by the GitHub action `LeanTrustBuilders/referee-site@main` (see its
@@ -49,7 +68,14 @@ docs https://leanprover-community.github.io/mathlib4_docs/, Loogle https://loogl
 for searching lemmas by shape, and the Zulip chat https://leanprover.zulipchat.com for
 questions. In the editor, use VS Code with the Lean 4 extension.
 
-## Gotchas collected on this project
+## Gotchas
+
+- `HasCondDistrib Y X κ P` and `Kernel.comap κ g hg` take the domain's `MeasurableSpace` as a plain
+  implicit argument. In a statement such as `HasCondDistrib Y X (κ.comap (fun p ↦ …) (by fun_prop)) P`
+  nothing fixes it, and elaboration fails with "tactic execution is stuck, goal contains
+  metavariables" or "don't know how to synthesize implicit argument". Ascribe the kernel's type,
+  `(κ.comap (fun p ↦ …) (by fun_prop) : Kernel ((Hist 𝓞 𝓐 𝓨 n × 𝓞) × 𝓐) 𝓨)`, or
+  `(κ.comap … : Kernel _ _)`: the type `Kernel γ β` synthesizes the instances.
 
 - Under the module system a proof nested in an `instance` becomes module-private and breaks
   comparator; keep instances used by headline definitions free of nested proofs. challenge-gen
