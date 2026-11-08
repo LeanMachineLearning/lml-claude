@@ -175,6 +175,9 @@ user is present.
 - **Never ask the user.** Decide, and record the decision in `notes/`. Do only what the
   repository's permission list allows; a denied command is a reason to find another way, or to
   record why the job is blocked, not to stop the round.
+- **An interrupted round.** If the working tree has uncommitted changes when the round starts,
+  a round was stopped before its commit: look at them first, keep what builds and belongs to the
+  job you pick, and revert the rest.
 - **A broken setup.** If the session cannot do any job because of its setup (edits, `lake` or
   `git commit` refused, a missing tool, no network), change nothing and end the round with the
   line `Setup problem: <what is wrong and how to fix it>`. `formalize.sh` stops on it.
