@@ -1,0 +1,15 @@
+{
+  "name": "lml-claude",
+  "description": "Claude Code plugins of Lean Machine Learning: formalizing papers on top of LMLExplore and contributing back to it.",
+  "owner": {
+    "name": "Lean Machine Learning",
+    "url": "https://github.com/LeanMachineLearning"
+  },
+  "plugins": [
+    {
+      "name": "lml",
+      "source": "./plugins/lml",
+      "description": "Formalize a paper in Lean on top of LMLExplore, and contribute its reusable part to LMLExplore."
+    }
+  ]
+}

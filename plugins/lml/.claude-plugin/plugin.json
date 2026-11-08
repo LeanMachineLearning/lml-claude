@@ -1,0 +1,12 @@
+{
+  "name": "lml",
+  "description": "Formalize a paper in Lean on top of LMLExplore, blueprint-driven and comparator-verified, and contribute its reusable part to LMLExplore through Tau Ceti workers.",
+  "author": {
+    "name": "Lean Machine Learning",
+    "url": "https://github.com/LeanMachineLearning"
+  },
+  "homepage": "https://github.com/LeanMachineLearning/lml-claude",
+  "repository": "https://github.com/LeanMachineLearning/lml-claude",
+  "license": "Apache-2.0",
+  "keywords": ["lean", "formalization", "machine-learning", "lmlexplore"]
+}
