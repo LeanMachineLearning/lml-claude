@@ -247,8 +247,10 @@ skips blocked results, but its rounds edit and commit the other files.
      `erratum` and `note` of the new statement;
    - the decision, with the date, in the entry: the **Lean** bullet of an errata entry, or the
      **Decision** bullet of a statement correction;
-   - regenerate the challenges (`python3 scripts/make-challenges.py`) and check with `git diff
-     comparator/` that only the decided challenges changed; `lake build Comparator` and
+   - regenerate the challenges into a scratch folder (`python3 scripts/make-challenges.py --out
+     <dir>`) and copy into `comparator/` only the decided results' `Challenge_<name>.lean` and
+     `<name>.json`. The other challenges come out different too, as proofs add imports and
+     `open`s to their files, but they stay as frozen. `lake build Comparator` and
      `scripts/check-build.sh` pass.
 4. Commit only those files, by path (`git commit -- <paths>`), so that a running round's work
    stays out of the commit, and push. The statement is frozen again from that commit on.
