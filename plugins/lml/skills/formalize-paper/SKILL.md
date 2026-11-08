@@ -190,7 +190,7 @@ user is present.
      Push it as far as the session gets, following the workflow above: proofs, blueprint tags,
      citations, errata, statuses in `PAPER_ROADMAP.md`.
   5. **Nothing applies:** print `Nothing to do` and stop.
-- **Before committing:** `scripts/build.sh <Lib> --wfail` and `lake exe runLinter <Lib>` pass,
+- **Before committing:** `scripts/check-build.sh` and `lake exe runLinter <Lib>` pass,
   or the round reverts what broke them; `lake exe mk_all --lib <Lib>` after adding or removing a
   module; `lake build Comparator` when a definition in the closure of a headline statement
   changed. Never run the full comparator verification: `formalize.sh` runs it once, at the end.
@@ -228,7 +228,7 @@ Run once at the end by `formalize.sh`, or at an LMLExplore sync when the user as
 3. For each merged port, and each item LMLExplore now has: delete the local copy in
    `ForLMLExplore/`, move every use to the LMLExplore declaration, and keep what is additional
    (more general results, extra lemmas), re-proved on top of LMLExplore. Retag the item `exists`.
-4. Apply the renames to the rest of the project, and rebuild with `--wfail`.
+4. Apply the renames to the rest of the project, and rebuild with `scripts/check-build.sh`.
 5. Declarations that moved change the names in the closure of the headline statements:
    regenerate the challenges (`python3 scripts/make-challenges.py`) and check, with a diff, that
    each statement is unchanged up to those names.
@@ -250,7 +250,7 @@ Run once at the end by `formalize.sh`, or at an LMLExplore sync when the user as
 Run after every batch of Lean edits, in this order:
 
 ```
-scripts/build.sh <Lib> --wfail         # whole library; warnings fail the build
+scripts/check-build.sh                 # whole library; every warning but sorry fails it
 lake exe runLinter <Lib>               # Mathlib linters; fix everything it reports
 grep -rn "sorry" <Lib>                 # must be empty at the end of phase 2
 grep -rn "^theorem" <Lib>              # only headline/classical results
