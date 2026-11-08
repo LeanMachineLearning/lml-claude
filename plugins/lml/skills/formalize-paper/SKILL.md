@@ -171,6 +171,9 @@ user is present.
 - **Never ask the user.** Decide, and record the decision in `notes/`. Do only what the
   repository's permission list allows; a denied command is a reason to find another way, or to
   record why the job is blocked, not to stop the round.
+- **A broken setup.** If the session cannot do any job because of its setup (edits, `lake` or
+  `git commit` refused, a missing tool, no network), change nothing and end the round with the
+  line `Setup problem: <what is wrong and how to fix it>`. `formalize.sh` stops on it.
 - **The statements are frozen.** Never change the comparator challenges, `comparator/targets.txt`
   or the statements of the headline results. If a headline result turns out false or unprovable
   as stated, write its errata entry, set the `status` of its `alignment.statements` entry to

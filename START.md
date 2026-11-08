@@ -188,7 +188,13 @@ Tell the user about the two steps that only they can do:
   frozen as comparator challenges. Compare the Lean statements with the paper before they are
   frozen.
 - **Start the rest of the formalization.** Once phase 1 is done, in a terminal or tmux and
-  outside the agent session, run `scripts/formalize.sh` and leave it running. It proves the rest
-  of the paper and sends the reusable parts to LMLExplore, on the user's subscription, and stops
-  when everything is done (`scripts/formalize.sh stop` stops it earlier). Its workers start once
-  a reusable item is proved; `scripts/formalize.sh status` and `scripts/formalize.sh logs <id>` show them.
+  outside the agent session, run `claude` once in the paper's folder and accept the trust dialog:
+  the unattended rounds get the permissions of the folder's `.claude/settings.json` only in a
+  trusted folder. For a run of several days, `claude setup-token` gives a login that lasts; export
+  the token it prints as `CLAUDE_CODE_OAUTH_TOKEN` in that terminal. Then run
+  `scripts/formalize.sh` and leave it running. It proves the rest of the paper and sends the
+  reusable parts to LMLExplore, on the user's subscription, and stops when everything is done
+  (`scripts/formalize.sh stop` stops it earlier). It also stops, saying why, when its rounds
+  cannot work: an untrusted folder, a setup problem a round reports, or three rounds in a row
+  without a commit. Its workers start once a reusable item is proved;
+  `scripts/formalize.sh status` and `scripts/formalize.sh logs <id>` show them.
