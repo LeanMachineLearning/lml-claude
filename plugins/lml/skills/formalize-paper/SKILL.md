@@ -127,6 +127,9 @@ that the links survive a port.
   work, `[MXJ26]`, gives no link. Library-shaped code cites its own sources the same way
   (`[LS, Theorem 11.2]`). A module that cites a work also lists it in its `## References`
   section.
+- **Every such citation is a link**, so use it only where the declaration formalizes the result,
+  a part of it or its proof. A result the docstring only mentions is written `Theorem 5 of
+  [MXJ26]`: "the proof does not use Theorem 5 of [MXJ26]".
 - **`literature/bibliography.json`** describes each cited work by its key: `uri` (its arXiv page,
   DOI or publisher page), `citation` (a CSL-JSON item), `identifiers` (`{"arxiv": "…"}`), and
   `version`, the revision whose numbering the citations use (`v2` of an arXiv preprint), when it
@@ -143,7 +146,9 @@ that the links survive a port.
   - `hasPart`: the Lean statement is one claim of the result.
 - **CI** writes the annotations from the dataset that the referee site extracts, with
   LMLExplore's `annotations.py` at a pinned commit, adds the relations, checks the result with
-  `literature-links validate`, and publishes it beside the blueprint.
+  `literature-links validate`, and publishes it on the website, as `literature/annotations.jsonl`,
+  with the page `literature/` that lists them (the template's `literature-page.py`). They exist
+  only there: neither the repository nor a local build has them.
 
 ## Errata
 
