@@ -204,7 +204,8 @@ user is present.
 - **Before committing:** `scripts/check-build.sh` and `lake exe runLinter <Lib>` pass,
   or the round reverts what broke them; `lake exe mk_all --lib <Lib>` after adding or removing a
   module; `lake build Comparator` when a definition in the closure of a headline statement
-  changed. Never run the full comparator verification: `formalize.sh` runs it once, at the end.
+  changed. Never run the full comparator verification: `formalize.sh` runs it once no `sorry` is
+  left.
 - **One commit per round**, whose message names the job and the area. Push to `origin`, when the
   repository has one (a paper kept local has none). Never
   rewrite history or force-push.

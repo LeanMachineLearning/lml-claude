@@ -192,11 +192,13 @@ Tell the user about the two steps that only they can do:
   the unattended rounds get the permissions of the folder's `.claude/settings.json` only in a
   trusted folder. For a run of several days, `claude setup-token` gives a login that lasts; export
   the token it prints as `CLAUDE_CODE_OAUTH_TOKEN` in that terminal. Then run
-  `scripts/formalize.sh` and leave it running. It proves the rest of the paper and sends the
-  reusable parts to LMLExplore, on the user's subscription, and stops when everything is done
-  (`scripts/formalize.sh stop` stops it earlier). It also stops, saying why, when its rounds
-  cannot work: an untrusted folder, a setup problem a round reports, or three rounds in a row
-  without a commit. Its workers start once a reusable item is proved;
+  `scripts/formalize.sh` and leave it running. It proves the rest of the paper, on the user's
+  subscription, while its workers send the reusable parts to LMLExplore. It stops once the paper is
+  formalized (every headline result proved, and comparator verifies them), and says what is still
+  to contribute; running `scripts/formalize.sh` again contributes it, and ends with the paper on
+  the current LMLExplore (`scripts/formalize.sh stop` stops either run earlier). It also stops,
+  saying why, when its rounds cannot work: an untrusted folder, a setup problem a round reports,
+  or three rounds in a row without a commit. Its workers start once a reusable item is proved;
   `scripts/formalize.sh status` and `scripts/formalize.sh logs <id>` show them.
 - **Decide on blocked results.** When a round finds a headline result false as stated, the script
   prints `Blocked: <result>` and the rounds skip it. The user then runs `claude` in the paper's
