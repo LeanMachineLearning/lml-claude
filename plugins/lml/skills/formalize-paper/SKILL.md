@@ -78,7 +78,10 @@ arguments go to `lake build`: it fetches Mathlib's and Tau Ceti's prebuilt files
    `formalization.yaml` (an entry of `alignment.statements`). Then go through the statements with
    the user, against the paper. Each gets its literature-links relation (the entry's `relation`
    key), and each error of the paper that this check finds gets an errata entry (named by the
-   entry's `erratum` key). Only then generate the comparator challenges
+   entry's `erratum` key). Record the check in the `review` section of `formalization.yaml` (who,
+   and when: `self-assessed` once the user has checked the statements, `author-verified` when the
+   user is an author of the paper, `agent-reviewed` while only an agent has), and the models in
+   `automation`. Only then generate the comparator challenges
    (`bootstrap.md`, step 6). The challenges freeze the statements: phase 2 must prove exactly
    them.
 3. **End of phase 1.** Tell the user that the rest can run unattended: `scripts/formalize.sh`, in
