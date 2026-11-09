@@ -39,9 +39,10 @@
   `pip install git+https://github.com/LeanTrustBuilders/referee-site` gives `trust-site build`.
 - **challenge-gen**: https://github.com/LeanTrustBuilders/challenge-gen — the comparator
   challenges, run by `scripts/make-challenges.py`. It writes each headline statement with `sorry`
-  as a standalone module, and beside it comparator's config listing the theorems to check. With
-  `--import LMLExplore --import Mathlib` the file imports the LMLExplore and Mathlib modules it
-  needs and copies the project's definitions verbatim from their sources. No binary release: the script clones and builds it into `~/.cache/<Name>/challenge-gen`,
+  as a standalone module, and beside it comparator's config listing the theorems to check. The
+  script passes `--import` for each of LMLExplore, LML, Tau Ceti and Mathlib that the project uses
+  (a converted paper may use LML and not LMLExplore yet): the file imports their modules and copies
+  only the project's definitions, verbatim from their sources. No binary release: the script clones and builds it into `~/.cache/<Name>/challenge-gen`,
   at the tag `v<toolchain>` of the project's `lean-toolchain`, which must exist
   (`gh release list -R LeanTrustBuilders/challenge-gen`; there is none before 4.35.0-rc3).
 - **leanblueprint**: https://github.com/PatrickMassot/leanblueprint — `pip install leanblueprint`;
