@@ -241,7 +241,8 @@ user is present.
    lines `Roadmap: none`, `Paper: <owner>/<repo>` and `Item: <Id>`.
 4. Set the item's status to `PR #<number>`, and commit.
 
-The PR worker that `formalize.sh` runs answers the review of these pull requests.
+LMLExplore's side reviews these pull requests and makes the changes they need; the paper
+project runs no worker for them.
 
 ## Blocked results
 
