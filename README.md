@@ -34,7 +34,8 @@ Third-party marketplaces do not update by default: turn on auto-update for `lml-
 2. **After phase 1, in a terminal.** `scripts/formalize.sh` in the paper repository proves the
    rest of the paper, and runs [Tau Ceti workers](https://github.com/TauCetiProject/TauCetiWorker)
    that port its library-shaped part to LMLExplore, where the resulting pull requests are
-   reviewed.
+   reviewed. The end of phase 1 asks how many agents formalize at once: with several, rounds on
+   independent areas of the blueprint run in parallel, each in its own worktree.
    It stops when everything is done.
 
 ## The skills

@@ -1,6 +1,6 @@
 ---
 name: formalize-paper
-description: Workflow and verification checklist for formalizing a research paper in Lean 4 on top of LMLExplore (and so Mathlib, Tau Ceti and LML), blueprint-driven and comparator-verified, in a repository made from lml-paper-template. Covers phase 1 with the user (outline, blueprint, statements), phase 2 (proofs), the unattended rounds that scripts/formalize.sh runs after phase 1 (argument `round`), the user's decisions on the headline results the rounds find false as stated (argument `decide`), the bump to a newer LMLExplore (argument `bump`), the literature-links citations and the errata file. Use when starting, extending or checking such a formalization.
+description: Workflow and verification checklist for formalizing a research paper in Lean 4 on top of LMLExplore (and so Mathlib, Tau Ceti and LML), blueprint-driven and comparator-verified, in a repository made from lml-paper-template. Covers phase 1 with the user (outline, blueprint, statements), phase 2 (proofs), the unattended rounds that scripts/formalize.sh runs after phase 1 (argument `round`, or `round <k>` for one of several rounds run in parallel), the user's decisions on the headline results the rounds find false as stated (argument `decide`), the bump to a newer LMLExplore (argument `bump`), the literature-links citations and the errata file. Use when starting, extending or checking such a formalization.
 ---
 
 # Formalizing a paper on top of LMLExplore
@@ -21,6 +21,8 @@ How this skill was invoked decides what to do:
   with the user. In a new repository, start with `bootstrap.md`.
 - **`round`**: one unattended round, see [Unattended rounds](#unattended-rounds). No user is
   present.
+- **`round <k>`**: one of several unattended rounds that run at once, in slot `<k>`, see
+  [Parallel rounds](#parallel-rounds). No user is present.
 - **`decide`**: the user decides on the headline results that rounds have blocked, see
   [Blocked results](#blocked-results).
 - **`bump`**: move to a newer LMLExplore, see [The bump](#the-bump).
@@ -84,9 +86,17 @@ arguments go to `lake build`: it fetches Mathlib's and Tau Ceti's prebuilt files
    `automation`. Only then generate the comparator challenges
    (`bootstrap.md`, step 6). The challenges freeze the statements: phase 2 must prove exactly
    them.
-3. **End of phase 1.** Tell the user that the rest can run unattended: `scripts/formalize.sh`, in
-   a terminal or tmux, outside the agent session. Phase 2 can also go on in a session, by the
-   same rules.
+3. **End of phase 1.** Ask the user how many agents should formalize the paper at once: 1, 2, 3
+   or 4. With several, `formalize.sh` runs up to that many rounds at the same time, each on its
+   own area of the blueprint (a chapter, or a main result with the prerequisites it still needs)
+   and in its own worktree; while only one area can be worked on, one round runs. Say what
+   decides it: several agents only help when the blueprint has areas that do not wait on each
+   other's unproved results (name those you see, and recommend that many, up to 4, or 1 when the
+   chapters form a chain); they use the subscription's usage limits that many times faster, for
+   about the same total; and each runs its own Lean builds, so memory use grows with their number.
+   Write the answer to `.tauceti/agents` (`scripts/formalize.sh --agents N` changes it later).
+   Then tell the user that the rest can run unattended: `scripts/formalize.sh`, in a terminal or
+   tmux, outside the agent session. Phase 2 can also go on in a session, by the same rules.
 4. **Phase 2, proofs, blueprint-driven.** Before attacking a large target, expand the blueprint
    into a sequence of small labelled lemmas with `\uses`. Then formalize one coherent area at a
    time (a whole prerequisite chapter), not scattered one-step lemmas. Prove the general
@@ -182,8 +192,9 @@ is: keep it factual and self-contained.
 
 ## Unattended rounds
 
-After phase 1, `scripts/formalize.sh` runs `claude -p "/lml:formalize-paper round"` in a loop. No
-user is present.
+After phase 1, `scripts/formalize.sh` runs `claude -p "/lml:formalize-paper round"` in a loop, or,
+when the user chose several agents, up to that many `round <k>` at once (see
+[Parallel rounds](#parallel-rounds)). No user is present.
 
 - **Never ask the user.** Decide, and record the decision in `notes/`. Do only what the
   repository's permission list allows; a denied command is a reason to find another way, or to
@@ -223,10 +234,57 @@ user is present.
   changed. Never run the full comparator verification: `formalize.sh` runs it once no `sorry` is
   left.
 - **One commit per round**, whose message names the job and the area. Push to `origin`, when the
-  repository has one (a paper kept local has none). Never
-  rewrite history or force-push.
+  repository has one (a paper kept local has none); a parallel round lands its commit instead.
+  Never rewrite history or force-push.
 - Outside the paper repository, a round only opens refactor pull requests to LMLExplore. It opens
   no issue or pull request anywhere else.
+
+### Parallel rounds
+
+With the argument `round <k>`, the round is one of several that `formalize.sh` runs at once. The
+rules above hold, with these changes.
+
+- **Where.** The working directory is slot `<k>`: a worktree of the paper, `.tauceti/slots/<k>`
+  of the main checkout (three folders up), on the branch `round/<k>`. Work and commit only in the
+  slot; never edit, commit or push in the main checkout.
+- **Claims.** `.tauceti/claims/` of the slot holds the jobs that the rounds running beside this
+  one have claimed, one file each: a first line `<Job>: <area>`, then a `files:` line (the Lean
+  files and blueprint chapters it edits) and an `items:` line (its items of `PAPER_ROADMAP.md`).
+  Take the first job of the list above that applies and that the claims leave free:
+  1. **Tag** only when there are no claims.
+  2. **Refresh** unless a claim is a refresh.
+  3. **Refactor pull request** unless a claim is one: they share a clone of LMLExplore.
+  4. **Advance**: an area chosen as for a single round, a whole chapter or a main result with the
+     prerequisites it still needs, that shares no Lean file, blueprint chapter or item with a
+     claimed area, and does not need a result that a claimed area has still to prove. Never split
+     an area into lemmas or other small items to make room beside the other rounds: when no whole
+     area is free, this round has nothing to do.
+  5. **Nothing free:** print `No free area` and stop when there are claims, `Nothing to do` when
+     there are none. `formalize.sh` then starts no round until another one lands.
+
+  As soon as the job is chosen, before any other work, write its claim in that format to
+  `.tauceti/claim` of the slot: `formalize.sh` starts the next round only once it is there. Never
+  touch the other rounds' claims.
+- **An interrupted round** of this slot also shows as commits of `round/<k>` that are not on the
+  main checkout's branch: an earlier round's job that did not land. Take it up first: claim it
+  again, finish or revert it, and land it.
+- **Shared files.** Other rounds change `formalization.yaml`, `PAPER_ROADMAP.md`, `notes/`, the
+  root module `<Lib>.lean` and the README at the same time. Change in them only what belongs to
+  your job (its statuses, its rows, a new errata entry), and leave the rest of each file as it is.
+- **Land the commit, instead of pushing:** `scripts/land.sh`, with a Bash timeout of 10 minutes.
+  It rebases the slot's commit onto the main checkout's branch, regenerates `<Lib>.lean`,
+  rebuilds when the branch has moved, fast-forwards the main checkout and pushes it.
+  - Exit 1, conflicts, which it lists: `git rebase <branch>`, resolve each conflict keeping both
+    rounds' changes (renumber your errata entry if another round took its number),
+    `git rebase --continue`, `scripts/check-build.sh`, then run `scripts/land.sh` again.
+  - Exit 2, the rebased commit does not build with the other rounds' work: fix it,
+    `git commit --amend`, and run it again.
+  - Exit 3, a session in the main checkout has local changes in the way: run it again after a few
+    minutes, three times at most; `formalize.sh` lands the commit after the round otherwise.
+
+  Rebasing or amending the round's own commit before it lands does not rewrite history.
+- **A refactor pull request** uses the main checkout's clone of LMLExplore, `../../LMLExplore`
+  from the slot.
 
 ### Refactor pull requests
 
@@ -256,7 +314,9 @@ skips blocked results, but its rounds edit and commit the other files.
    counterexample) as the headline result; or drop the result. Recommend one, and ask.
 2. Before editing, look at `git status`: a running round may have uncommitted changes in a file
    you need (`formalization.yaml`, a blueprint chapter, `PAPER_ROADMAP.md`). Then wait for the
-   round's commit; the loop prints a line at each new round.
+   round's commit; the loop prints a line at each new round. With several agents, the rounds work
+   in `.tauceti/slots/`, and their commits reach the main checkout when they land; a landing that
+   changes a file you have edited waits until you commit.
 3. Apply the decision:
    - the statement and its docstring in `<Lib>/<Paper>/`, and its blueprint environment;
    - for a dropped result, its lines in `comparator/targets.txt`, in the `globs` of the

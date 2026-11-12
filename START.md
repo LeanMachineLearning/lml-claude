@@ -193,7 +193,9 @@ Tell the user about the two steps that only they can do:
   trusted folder. For a run of several days, `claude setup-token` gives a login that lasts; export
   the token it prints as `CLAUDE_CODE_OAUTH_TOKEN` in that terminal. Then run
   `scripts/formalize.sh` and leave it running. It proves the rest of the paper, on the user's
-  subscription, while its workers send the reusable parts to LMLExplore. It stops once the paper is
+  subscription, while its workers send the reusable parts to LMLExplore: with the number of agents
+  chosen at the end of phase 1, several rounds on independent areas of the blueprint run at once
+  (`scripts/formalize.sh --agents N` changes the number). It stops once the paper is
   formalized (every headline result proved, and comparator verifies them), and says what is still
   to contribute; running `scripts/formalize.sh` again contributes it, and ends with the paper on
   the current LMLExplore (`scripts/formalize.sh stop` stops either run earlier). It also stops,
