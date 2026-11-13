@@ -6,7 +6,13 @@ lml-claude, or by
 
 ```
 gh repo create <Name> --template LeanMachineLearning/lml-paper-template --public --clone
+cd <Name>
+gh repo edit --add-topic lmlexplore-paper
 ```
+
+The topic `lmlexplore-paper` is how LMLExplore's papers pages
+(https://leanmachinelearning.org/LMLExplore/papers/) find the public paper projects; GitHub does
+not copy topics from a template, so a repository made from it starts without one.
 
 Do the steps in order; each ends with a check that must pass before moving on. The names are those
 of `SKILL.md`: `<Name>` the repository (`Maiti2026Power`), `<Lib>` the Lean library (usually the
@@ -59,6 +65,8 @@ key (`MXJ26`). `tools.md` says where each tool comes from.
    Comparator`, then one `scripts/comparator-verify.sh --insecure <config>`.
 7. **First push.** Commit. If the repository is on GitHub, push, and check that the CI workflow
    goes green: build, lint, pins, `ForLMLExplore/` rules, `mk_all --check`, comparator build, and on
-   `main` the referee site, literature links and blueprint deployment. A paper kept local has no
+   `main` the referee site, literature links and blueprint deployment. A public repository also
+   carries the topic `lmlexplore-paper`: check that `gh repo view --json repositoryTopics` lists
+   it, and add it with `gh repo edit --add-topic lmlexplore-paper` if not. A paper kept local has no
    CI: run `scripts/check-build.sh`, `lake lint`, `scripts/check-pins.sh` and
    `scripts/check-forlmlexplore.sh` instead. From here on, follow the workflow in `SKILL.md`.
